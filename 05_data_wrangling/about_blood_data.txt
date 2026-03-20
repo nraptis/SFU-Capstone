@@ -22,3 +22,7 @@ No credit is given to the sources, I have converted and/or renamed the files.
 Please track down and give credit to the original data sets if you're using these images.
 
 I am not aware of any legal ties, these are derived from publically available data. 
+
+----
+
+The final selected data was, instead, selected from 1 data set. The final model is domain sensitive, does not generalize across "all microscopes"...

@@ -1,0 +1,10 @@
+{
+  "ensemble_test_accuracy_majority": 0.9322132097334879,
+  "ensemble_validation_accuracy_majority": 0.9337594421847762,
+  "event": "winner_export",
+  "mix_index": 0,
+  "session_dir": "2026-02-19-07-52-PM-UTC-SPLIT-B-ENSEMBLE-436bee46",
+  "split": "b",
+  "time_seed": "2026-02-19-07-52-PM-UTC",
+  "winning_epoch": 19
+}
