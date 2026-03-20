@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101420">
+    <title>Secret Blood Testing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="content-container">
+    <main class="page-shell">
+      {% if banner_exists %}
+      <section class="banner-shell">
+        <img src="{{ url_for('local_image', filename='banner.jpg') }}" alt="Banner" class="banner-image">
+      </section>
+      {% endif %}
+
+      <h1 class="main-title">
+        Secret Blood Testing (Sample Data:
+        <a href="https://github.com/nraptis/Blood-Cell-Sample-Data" class="sample-data-link" target="_blank" rel="noopener noreferrer">Here</a>)
+      </h1>
+
+      <section class="tabs-shell" id="tabs-shell">
+        <div class="tabs-header">
+          <button type="button" class="tab-button {% if active_tab == 'blood-test' %}is-active{% endif %}" data-tab="blood-test">Blood Test</button>
+          <button type="button" class="tab-button {% if active_tab == 'cell-types' %}is-active{% endif %}" data-tab="cell-types">Cell Types</button>
+          <span class="tabs-active-pill" id="tabs-active-pill" aria-hidden="true"></span>
+        </div>
+
+        <div class="tab-panel {% if active_tab == 'blood-test' %}is-active{% endif %}" id="tab-blood-test">
+          <div class="stacked-cards">
+          <form method="post" enctype="multipart/form-data" class="card" id="inference-form">
+            <input type="hidden" name="active_tab" id="active-tab-input" value="{{ active_tab }}">
+
+            <label class="card-title upload-title">Upload single cell image</label>
+
+            <div class="upload-shell" id="dropzone">
+              <div class="upload-icon-box">
+                <div class="upload-icon" aria-hidden="true">⇪</div>
+              </div>
+
+              <div class="upload-copy-box">
+                <div class="upload-primary">Drag and drop here</div>
+                <div class="upload-secondary">PNG or JPG, max 5MB</div>
+              </div>
+
+              <div class="upload-button-box">
+                <button type="button" class="upload-browse-button" id="browse-button">Browse files</button>
+              </div>
+
+              <input id="cell-image-input" name="cell_image" type="file" accept=".png,.jpg,.jpeg" required>
+            </div>
+
+            <div class="form-row normalize-row">
+              <label class="checkbox-line">
+                <input id="normalize-toggle" name="normalize" type="checkbox" {% if normalize %}checked{% endif %}>
+                LAB normalize (recommended)
+              </label>
+            </div>
+
+            <div class="form-row analyze-row">
+              <button type="submit" class="analyze-button" id="analyze-button" {% if message %}disabled{% endif %}>Analyze</button>
+              <div class="inline-spinner" id="submit-spinner" aria-hidden="true"></div>
+              <div class="spinner-text" id="spinner-text">Analyzing...</div>
+            </div>
+
+            <div class="status-text"><strong>Selected:</strong> <span id="selected-name">{{ selected_filename }}</span></div>
+
+            {% if error %}
+            <div class="error-text">{{ error }}</div>
+            {% endif %}
+
+            {% if message %}
+            <div class="success-text">{{ message }}</div>
+            {% endif %}
+          </form>
+
+          <section class="card {% if not preview_uri %}is-hidden{% endif %}" id="preview-card">
+            <h2 class="card-title">Uploaded Image</h2>
+            <div class="preview-shell">
+              <img src="{{ preview_uri }}" alt="Uploaded image preview" class="preview-image" id="preview-image">
+            </div>
+            <div class="preview-caption" id="preview-caption">{{ preview_caption }}</div>
+            <input type="hidden" id="classified-preview-with-norm" value="{{ classified_preview_uri_with_norm }}">
+            <input type="hidden" id="classified-preview-without-norm" value="{{ classified_preview_uri_without_norm }}">
+          </section>
+
+          <section class="card {% if not image_stats_rows and not ensemble_rows and not model_rows %}is-hidden{% endif %}" id="results-card">
+            {% if ensemble_rows %}
+            <h3 class="results-section-title">Ensemble Top Results</h3>
+            <div class="results-shell">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Probability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in ensemble_rows %}
+                  <tr>
+                    <td>{{ row.class_name }}</td>
+                    <td>{{ row.probability }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endif %}
+
+            {% if image_stats_rows %}
+            <h3 class="results-section-title image-stats-title">Image Stats</h3>
+            <div class="results-shell">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Stat</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in image_stats_rows %}
+                  <tr>
+                    <td>{{ row.stat_name }}</td>
+                    <td>{{ row.stat_value }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endif %}
+
+            {% if model_rows %}
+            <h3 class="results-section-title per-model-title">Per-Model Top Picks</h3>
+            {% for model_name, rows in model_rows.items() %}
+            <h3 class="model-title">{{ model_name }}</h3>
+            <ul class="model-list">
+              {% for row in rows %}
+              <li>{{ row }}</li>
+              {% endfor %}
+            </ul>
+            {% endfor %}
+            {% endif %}
+          </section>
+
+          <section class="card disclaimer-card">
+            <div class="disclaimer medical-disclaimer">
+              <small class="medical-disclaimer-primary-line">
+                Educational UI only. This is not medical advice and cannot diagnose conditions.
+                For medical concerns, consult a qualified clinician.
+              </small>
+              <small class="medical-disclaimer-secondary-line">
+                Image quality and zoom level matter: the Cell Types reference tab shows the recommended framing
+                for centering and cropping a single target cell.
+              </small>
+            </div>
+          </section>
+          </div>
+        </div>
+
+        <div class="tab-panel {% if active_tab == 'cell-types' %}is-active{% endif %}" id="tab-cell-types">
+          <div class="stacked-cards">
+            <section class="card">
+              <h2 class="card-title">Cell Type Reference</h2>
+              <p class="hint-text cell-types-hint">Our model is trained to recognize the 16 cell types shown below. Best results come from images captured with clinical-grade microscopy and consistent smear prep, focus, and lighting similar to the training data. See above for sample data.</p>
+              <div class="cell-grid">
+                {% for card in cell_type_cards %}
+                <div class="cell-card">
+                  <div class="image-wrap">
+                    <div class="image-spinner" aria-hidden="true"></div>
+                    <img src="{{ url_for('local_image', filename=card.image_name) }}" alt="{{ card.title }}" class="cell-image loading">
+                  </div>
+                  <div class="cell-label">{{ card.title }}</div>
+                  <div class="cell-summary">{{ card.summary }}</div>
+                  <div class="cell-concern">{{ card.concern }}</div>
+                </div>
+                {% endfor %}
+              </div>
+            </section>
+
+            <section class="card disclaimer-card">
+              <div class="disclaimer medical-disclaimer">
+                <small class="medical-disclaimer-primary-line">
+                  Educational UI only. This is not medical advice and cannot diagnose conditions.
+                  For medical concerns, consult a qualified clinician.
+                </small>
+                <small class="medical-disclaimer-secondary-line">
+                  Image quality and zoom level matter: the Cell Types reference tab shows the recommended framing
+                  for centering and cropping a single target cell.
+                </small>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+      </div>
+    </div>
+    <footer class="trademark-strip">
+      &copy;<span id="current-year"></span> Bloodworks Incorporated - A Nick Raptis Company
+    </footer>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+Notes about this data.
+
+I simply searched around on the internet and grabbed every blood cell dataset I could get my hands on.
+
+The main things I was looking for:
+
+1.) Primarily single cell images.
+2.) Large enough to shrink down.
+3.) Sharp enough to not be super blurry.
+
+----
+
+Is this data "ready to go?"
+
+It's your call. For my own project, I intend to sift through this data.
+For example, in the "120 patient" data, there are a lot of images with more than one cell.
+
+Some of the non-smudge-cell images could be considered smudge cells - depending on the doctor.
+
+No credit is given to the sources, I have converted and/or renamed the files.
+
+Please track down and give credit to the original data sets if you're using these images.
+
+I am not aware of any legal ties, these are derived from publically available data. 

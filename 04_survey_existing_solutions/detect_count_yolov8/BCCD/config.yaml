@@ -1,0 +1,10 @@
+path: detect_count_yolov8/BCCD
+train: images/train
+val: images/train   # using train as val since no val labels
+
+names:
+  0: RBC
+  1: WBC
+  2: Platelets
+
+
