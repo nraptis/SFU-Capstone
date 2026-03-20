@@ -1,0 +1,9 @@
+The route 53 domain:
+https://secretbloodtest.com/
+https://secretbloodtest.com/
+
+The load balancer:
+http://privatebloodtest.us-east-1.elasticbeanstalk.com/
+http://privatebloodtest.us-east-1.elasticbeanstalk.com/
+
+Note: I have budget actions set up, so portions of this system will go down when monthly expenditures exceed $40.
